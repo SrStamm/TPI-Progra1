@@ -52,21 +52,48 @@ def obtener_paises_de_archivo(file_dir = "datos.csv"):
         return lista_paises
 
 # -----------------------
-# Función de Gastón
+# Función de Gastón (Versión Blindada)
 # -----------------------
 
 def agregar_pais_a_archivo():
-    # ingreso y validación de nombre
+    print("\n--- REGISTRAR NUEVO PAÍS ---")
+    
+    # 1. Tu ingreso y validación de nombre original
     nombre = input("Ingrese el nombre del país: ").strip()
     while not nombre.isalpha():
         nombre = input("Error Ingrese un nombre válido: ")
 
-    poblacion = input("Ingrese la población: ")
-    superficie = input("Ingrese la superficie: ")
-    continente = input("Ingrese el continente: ")
+    # 2. Validación de Población (No acepta letras ni números negativos)
+    while True:
+        try:
+            poblacion = int(input("Ingrese la población: "))
+            if poblacion > 0:
+                break
+            print("Error: La población debe ser un número mayor a 0.")
+        except ValueError:
+            print("Error: Debe ingresar un número entero válido (sin letras ni puntos).")
 
-    # escribe lq línea en el CSV usando los datos de arriba
-    with open("datos.csv", "a", encoding="utf-8") as archivo:
-        archivo.write(f"\n{nombre},{poblacion},{superficie},{continente}")
+    # 3. Validación de Superficie (No acepta letras ni números negativos)
+    while True:
+        try:
+            superficie = int(input("Ingrese la superficie: "))
+            if superficie > 0:
+                break
+            print("Error: La superficie debe ser un número mayor a 0.")
+        except ValueError:
+            print("Error: Debe ingresar un número entero válido (sin letras ni puntos).")
+
+    # 4. Validación de Continente (Lista cerrada para evitar cualquier fruta)
+    continentes_validos = ["America", "Europa", "Asia", "Africa", "Oceania"]
+    continente = input("Ingrese el continente: ").strip().capitalize()
+    while continente not in continentes_validos:
+        print("Error: Continente inválido. Opciones: America, Europa, Asia, Africa, Oceania.")
+        continente = input("Ingrese el continente: ").strip().capitalize()
+
+    # 5. Escritura limpia en el CSV usando la librería nativa
+    # Nota: Usamos csv.writer para que maneje los saltos de línea a la perfección en Mac y Windows
+    with open("datos.csv", "a", newline="", encoding="utf-8") as archivo:
+        escritor = csv.writer(archivo)
+        escritor.writerow([nombre, poblacion, superficie, continente])
     
-    print(f"¡Éxito! El país {nombre} fue agregado al archivo.")
+    print(f"\n¡Éxito! El país {nombre} fue agregado al archivo.")
