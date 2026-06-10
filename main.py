@@ -60,6 +60,15 @@ def obtener_paises_de_archivo(file_dir = "datos.csv"):
                 # Si hay un error de formato o falta una columna en la fila del CSV, la salta de forma segura
                 continue
         return lista_paises
+
+def guardar_paises_en_archivo(lista_paises, file_dir = "datos.csv"):
+    campos = ["nombre", "poblacion", "superficie", "continente"]
+
+    with open(file_dir, "w", newline="", encoding="utf-8") as archivo:
+        escritor = csv.DictWriter(archivo, fieldnames=campos)
+        escritor.writeheader()
+        escritor.writerows(lista_paises)
+
 # -----------------------
 # Función de Gastón 
 # -----------------------
@@ -106,4 +115,63 @@ def agregar_pais_a_archivo():
         escritor.writerow([nombre, poblacion, superficie, continente])
     
     print(f"\n¡Éxito! El país {nombre} fue agregado al archivo.")
-agregar_pais_a_archivo()
+
+def actualizar_pais():
+    # Solicita el nombre del país, si no es válido lanza excepción
+    try:
+        nombre_pais = pedir_string("Ingrese el nombre del país: ")
+    except ValueError as e:
+        print(e)
+        return
+
+    # Obtiene la lista de países
+    lista_paises = obtener_paises_de_archivo()
+
+    existe = False
+    pais = {}
+
+    # Itera por cada país y válida si existe el país ingresado por el usuario
+    for i in lista_paises:
+        if i["nombre"].lower() == nombre_pais.lower():
+            existe = True
+            pais = i
+            break
+
+    # Si el país no existe en el archivo, le avisa al usuario
+    if not existe:
+        print("Error: El país no existe")
+        return
+
+    # Pregunta al usuario si desea actualizar la población
+    try:
+        eleccion = pedir_string("Desea actualizar la Población? (Si/No)")
+    except Exception as e:
+        print(e)
+        return
+
+    if eleccion.upper() in ("SI", "S"):
+        actualizar_campo_numerico(pais, "poblacion")
+
+    # Pregunta al usuario si desea actualizar la superficie
+    try:
+        eleccion = pedir_string("Desea actualizar la Superficie? (Si/No)")
+    except Exception as e:
+        print(e)
+        return
+
+    if eleccion.upper() in ("SI", "S"):
+        actualizar_campo_numerico(pais, "superficie")
+
+    guardar_paises_en_archivo(lista_paises)
+
+def actualizar_campo_numerico(pais, campo):
+    while True:
+        try:
+            nuevo_val_campo = pedir_entero(f"Ingrese el nuevo valor de {campo.capitalize()}: ")
+            pais[campo] = nuevo_val_campo
+            print(f"{campo.capitalize()} actualizada correctamente.")
+            break
+        except Exception as e:
+            print(e)
+            continue
+
