@@ -209,16 +209,35 @@ def obtener_estadisticas():
         # Agrega el país al total por continente
         total_por_continente[i["continente"]] += 1
 
-    print(f"El país con menor población es: {pais_menor_poblacion}")
-    print(f"El país con mayor población es: {pais_mayor_poblacion}")
-    print(f"El promedio de población es: {round(total_poblacion / len(lista_paises), 2)}")
-    print(f"El promedio de superficie es: {round(total_superficie / len(lista_paises), 2)} kms")
-
-    print(f"El total de países en América es {total_por_continente["América"]}")
-    print(f"El total de países en Europa es {total_por_continente["Europa"]}")
-    print(f"El total de países en Africa es {total_por_continente["África"]}")
-    print(f"El total de países en Asia es {total_por_continente["Asia"]}")
-    print(f"El total de países en Oceanía es {total_por_continente["Oceanía"]}")
+    return {
+        "cantidad_de_datos": len(lista_paises),
+        "pais_menor_poblacion": pais_menor_poblacion,
+        "pais_mayor_poblacion": pais_mayor_poblacion,
+        "total_poblacion": total_poblacion,
+        "total_superficie": total_superficie,
+        "total_por_continente": total_por_continente
+    }
 
 
-obtener_estadisticas()
+def imprimir_estadisticas(datos):
+    imprimir_seccion("### DEMOGRAFÍA GENERAL ###")
+
+    print(f"El país con menor población es: {datos["pais_menor_poblacion"]}")
+    print(f"El país con mayor población es: {datos["pais_mayor_poblacion"]}")
+
+    imprimir_seccion("### PROMEDIOS GEOGRÁFICOS ###")
+
+    print(f"El promedio de población es: {round(datos['total_poblacion'] / datos['cantidad_de_datos']):,}")
+    print(f"El promedio de superficie es: {round(datos['total_superficie'] / datos['cantidad_de_datos']):,} kms")
+
+    imprimir_seccion("### DISTRIBUCIÓN POR CONTINENTE ###")
+
+    print(f"América....: {datos['total_por_continente']['América']} países")
+    print(f"Europa.....: {datos['total_por_continente']['Europa']} países")
+    print(f"África.....: {datos['total_por_continente']['África']} países")
+    print(f"Asia.......: {datos['total_por_continente']['Asia']} países")
+    print(f"Oceanía....: {datos['total_por_continente']['Oceanía']} países")
+
+
+datos = obtener_estadisticas()
+imprimir_estadisticas(datos)
