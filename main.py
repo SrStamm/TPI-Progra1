@@ -51,6 +51,14 @@ def obtener_paises_de_archivo(file_dir = "datos.csv"):
 
         return lista_paises
 
+def guardar_paises_en_archivo(lista_paises, file_dir = "datos.csv"):
+    campos = ["nombre", "poblacion", "superficie", "continente"]
+
+    with open(file_dir, "w", newline="", encoding="utf-8") as archivo:
+        escritor = csv.DictWriter(archivo, fieldnames=campos)
+        escritor.writeheader()
+        escritor.writerows(lista_paises)
+
 # -----------------------
 # Función de Gastón (Versión Blindada)
 # -----------------------
@@ -157,12 +165,7 @@ def actualizar_poblacion_de_pais(pais, lista_paises):
         # Actualiza el valor de la población
         pais["poblacion"] = nuevo_val_poblacion
 
-        with open("datos.csv", "w", newline="", encoding="utf-8") as archivo:
-            campos = ["nombre", "poblacion", "superficie", "continente"]
-
-            escritor = csv.DictWriter(archivo, fieldnames=campos)
-            escritor.writeheader()
-            escritor.writerows(lista_paises)
+        guardar_paises_en_archivo(lista_paises)
 
         print("Población actualizada correctamente.")
         break
@@ -178,12 +181,7 @@ def actualizar_superficie_de_pais(pais, lista_paises):
         # Actualiza el valor de la superficie
         pais["superficie"] = nuevo_val_superficie
 
-        with open("datos.csv", "w", newline="", encoding="utf-8") as archivo:
-            campos = ["nombre", "poblacion", "superficie", "continente"]
-
-            escritor = csv.DictWriter(archivo, fieldnames=campos)
-            escritor.writeheader()
-            escritor.writerows(lista_paises)
+        guardar_paises_en_archivo(lista_paises)
 
         print("Superficie actualizada correctamente.")
         break
