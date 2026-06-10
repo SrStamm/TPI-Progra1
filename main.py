@@ -97,3 +97,93 @@ def agregar_pais_a_archivo():
         escritor.writerow([nombre, poblacion, superficie, continente])
     
     print(f"\n¡Éxito! El país {nombre} fue agregado al archivo.")
+
+
+def actualizar_pais():
+    # Solicita el nombre del país, si no es válido lanza excepción
+    try:
+        nombre_pais = pedir_string("Ingrese el nombre del país: ")
+    except ValueError as e:
+        print(e)
+        return
+
+    # Obtiene la lista de países
+    lista_paises = obtener_paises_de_archivo()
+
+    existe = False
+    pais = {}
+
+    # Itera por cada país y válida si existe el país ingresado por el usuario
+    for i in lista_paises:
+        if i["nombre"].lower() == nombre_pais.lower():
+            existe = True
+            pais = i
+            break
+
+    # Si el país no existe en el archivo, le avisa al usuario
+    if not existe:
+        print("Error: El país no existe")
+        return
+
+    # Pregunta al usuario si desea actualizar la población
+    try:
+        eleccion = pedir_string("Desea actualizar la Población? (Si/No)")
+    except Exception as e:
+        print(e)
+        return
+
+    if eleccion.upper() == "SI" or eleccion.upper() == "S":
+        actualizar_poblacion_de_pais(pais, lista_paises)
+
+    # Pregunta al usuario si desea actualizar la superficie
+    try:
+        eleccion = pedir_string("Desea actualizar la Superficie? (Si/No)")
+    except Exception as e:
+        print(e)
+        return
+
+    if eleccion.upper() == "SI" or eleccion.upper() == "S":
+        actualizar_superficie_de_pais(pais, lista_paises)
+
+
+def actualizar_poblacion_de_pais(pais, lista_paises):
+    while True:
+        try:
+            nuevo_val_poblacion = pedir_entero("Ingrese el nuevo valor de Población: ")
+        except Exception as e:
+            print(e)
+            continue
+
+        # Actualiza el valor de la población
+        pais["poblacion"] = nuevo_val_poblacion
+
+        with open("datos.csv", "w", newline="", encoding="utf-8") as archivo:
+            campos = ["nombre", "poblacion", "superficie", "continente"]
+
+            escritor = csv.DictWriter(archivo, fieldnames=campos)
+            escritor.writeheader()
+            escritor.writerows(lista_paises)
+
+        print("Población actualizada correctamente.")
+        break
+
+def actualizar_superficie_de_pais(pais, lista_paises):
+    while True:
+        try:
+            nuevo_val_superficie = pedir_entero("Ingrese el nuevo valor de Superficie: ")
+        except Exception as e:
+            print(e)
+            continue
+
+        # Actualiza el valor de la superficie
+        pais["superficie"] = nuevo_val_superficie
+
+        with open("datos.csv", "w", newline="", encoding="utf-8") as archivo:
+            campos = ["nombre", "poblacion", "superficie", "continente"]
+
+            escritor = csv.DictWriter(archivo, fieldnames=campos)
+            escritor.writeheader()
+            escritor.writerows(lista_paises)
+
+        print("Superficie actualizada correctamente.")
+        break
