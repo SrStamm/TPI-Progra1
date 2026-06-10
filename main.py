@@ -175,3 +175,31 @@ def actualizar_campo_numerico(pais, campo):
             print(e)
             continue
 
+def obtener_estadisticas():
+    lista_paises = obtener_paises_de_archivo()
+
+    # País con mayor y menor población
+    pais_menor_poblacion = lista_paises[0]["nombre"]
+    pais_mayor_poblacion = lista_paises[0]["nombre"]
+
+    cantidad_menor_pais = lista_paises[0]["poblacion"]
+    cantidad_mayor_pais = lista_paises[0]["poblacion"]
+
+    for i in lista_paises:
+        if i["poblacion"] > cantidad_mayor_pais:
+            cantidad_mayor_pais = i["poblacion"]
+            pais_mayor_poblacion = i["nombre"]
+
+        if i["poblacion"] < cantidad_menor_pais:
+            cantidad_menor_pais = i["poblacion"]
+            pais_menor_poblacion = i["nombre"]
+
+
+
+    # Promedio de población
+    # Promedio de superficie
+    # Cantidad de países por continente
+
+    print(f"El país con menor población es: {pais_menor_poblacion}")
+    print(f"El país con mayor población es: {pais_mayor_poblacion}")
+obtener_estadisticas()
