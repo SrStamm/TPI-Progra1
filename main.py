@@ -187,6 +187,7 @@ def obtener_estadisticas():
 
     total_poblacion = 0
     total_superficie = 0
+    total_por_continente = {"América": 0, "Asia": 0, "Europa": 0, "África": 0, "Oceanía": 0}
 
     for i in lista_paises:
         # Valida si la población es mayor que la del país con mayor población actual
@@ -201,17 +202,23 @@ def obtener_estadisticas():
             cantidad_menor_pais = i["poblacion"]
             pais_menor_poblacion = i["nombre"]
 
-        # Agrega al total de por
+        # Agrega al total de población y superficie
         total_poblacion += i["poblacion"]
         total_superficie += i["superficie"]
 
-    # Promedio de superficie
-    # Cantidad de países por continente
+        # Agrega el país al total por continente
+        total_por_continente[i["continente"]] += 1
 
     print(f"El país con menor población es: {pais_menor_poblacion}")
     print(f"El país con mayor población es: {pais_mayor_poblacion}")
     print(f"El promedio de población es: {round(total_poblacion / len(lista_paises), 2)}")
     print(f"El promedio de superficie es: {round(total_superficie / len(lista_paises), 2)} kms")
+
+    print(f"El total de países en América es {total_por_continente["América"]}")
+    print(f"El total de países en Europa es {total_por_continente["Europa"]}")
+    print(f"El total de países en Africa es {total_por_continente["África"]}")
+    print(f"El total de países en Asia es {total_por_continente["Asia"]}")
+    print(f"El total de países en Oceanía es {total_por_continente["Oceanía"]}")
 
 
 obtener_estadisticas()
