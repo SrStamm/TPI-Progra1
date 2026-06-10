@@ -140,8 +140,8 @@ def actualizar_pais():
         print(e)
         return
 
-    if eleccion.upper() == "SI" or eleccion.upper() == "S":
-        actualizar_poblacion_de_pais(pais, lista_paises)
+    if eleccion.upper() in ("SI", "S"):
+        actualizar_poblacion_de_pais(pais)
 
     # Pregunta al usuario si desea actualizar la superficie
     try:
@@ -150,11 +150,13 @@ def actualizar_pais():
         print(e)
         return
 
-    if eleccion.upper() == "SI" or eleccion.upper() == "S":
-        actualizar_superficie_de_pais(pais, lista_paises)
+    if eleccion.upper() in ("SI", "S"):
+        actualizar_superficie_de_pais(pais)
+
+    guardar_paises_en_archivo(lista_paises)
 
 
-def actualizar_poblacion_de_pais(pais, lista_paises):
+def actualizar_poblacion_de_pais(pais):
     while True:
         try:
             nuevo_val_poblacion = pedir_entero("Ingrese el nuevo valor de Población: ")
@@ -165,12 +167,10 @@ def actualizar_poblacion_de_pais(pais, lista_paises):
         # Actualiza el valor de la población
         pais["poblacion"] = nuevo_val_poblacion
 
-        guardar_paises_en_archivo(lista_paises)
-
         print("Población actualizada correctamente.")
         break
 
-def actualizar_superficie_de_pais(pais, lista_paises):
+def actualizar_superficie_de_pais(pais):
     while True:
         try:
             nuevo_val_superficie = pedir_entero("Ingrese el nuevo valor de Superficie: ")
@@ -180,8 +180,6 @@ def actualizar_superficie_de_pais(pais, lista_paises):
 
         # Actualiza el valor de la superficie
         pais["superficie"] = nuevo_val_superficie
-
-        guardar_paises_en_archivo(lista_paises)
 
         print("Superficie actualizada correctamente.")
         break
