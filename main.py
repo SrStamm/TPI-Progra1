@@ -47,8 +47,18 @@ def obtener_paises_de_archivo(file_dir = "datos.csv"):
         lector = csv.DictReader(archivo)
         lista_paises = []
         for i in lector:
-            lista_paises.append(i)
-
+            try:
+                #Convierte los datos numéricos a enteros (int) al leer el archivo
+                pais_parseado = {
+                    "nombre": i["nombre"],
+                    "poblacion": int(i["poblacion"]),
+                    "superficie": int(i["superficie"]),
+                    "continente": i["continente"]
+                }
+                lista_paises.append(pais_parseado)
+            except (ValueError, KeyError):
+                # Si hay un error de formato o falta una columna en la fila del CSV, la salta de forma segura
+                continue
         return lista_paises
 
 def guardar_paises_en_archivo(lista_paises, file_dir = "datos.csv"):
@@ -60,13 +70,13 @@ def guardar_paises_en_archivo(lista_paises, file_dir = "datos.csv"):
         escritor.writerows(lista_paises)
 
 # -----------------------
-# Función de Gastón (Versión Blindada)
+# Función de Gastón 
 # -----------------------
 
 def agregar_pais_a_archivo():
     print("\n--- REGISTRAR NUEVO PAÍS ---")
     
-    # 1. Tu ingreso y validación de nombre original
+    # 1. ingreso y validación de nombre original
     nombre = input("Ingrese el nombre del país: ").strip()
     while not nombre.isalpha():
         nombre = input("Error Ingrese un nombre válido: ")
@@ -105,7 +115,6 @@ def agregar_pais_a_archivo():
         escritor.writerow([nombre, poblacion, superficie, continente])
     
     print(f"\n¡Éxito! El país {nombre} fue agregado al archivo.")
-
 
 def actualizar_pais():
     # Solicita el nombre del país, si no es válido lanza excepción
@@ -166,4 +175,3 @@ def actualizar_campo_numerico(pais, campo):
             print(e)
             continue
 
-actualizar_pais()
