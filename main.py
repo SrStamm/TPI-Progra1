@@ -52,13 +52,13 @@ def obtener_paises_de_archivo(file_dir = "datos.csv"):
         return lista_paises
 
 # -----------------------
-# Función de Gastón (Versión Blindada)
+# Función de Gastón
 # -----------------------
 
 def agregar_pais_a_archivo():
     print("\n--- REGISTRAR NUEVO PAÍS ---")
     
-    # 1. Tu ingreso y validación de nombre original
+    # 1. ingreso y validación de nombre original
     nombre = input("Ingrese el nombre del país: ").strip()
     while not nombre.isalpha():
         nombre = input("Error Ingrese un nombre válido: ")
