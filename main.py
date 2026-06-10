@@ -108,6 +108,14 @@ def agregar_pais_a_archivo():
         print("Error: Continente inválido. Opciones: America, Europa, Asia, Africa, Oceania.")
         continente = input("Ingrese el continente: ").strip().capitalize()
 
+    # Convierte los continentes a forma csv
+    if continente == "America":
+        continente = "América"
+    if continente == "Africa":
+        continente = "África"
+    if continente == "Oceania":
+        continente = "Oceanía"
+
     # 5. Escritura limpia en el CSV usando la librería nativa
     # Nota: Usamos csv.writer para que maneje los saltos de línea a la perfección en Mac y Windows
     with open("datos.csv", "a", newline="", encoding="utf-8") as archivo:
@@ -222,8 +230,8 @@ def obtener_estadisticas():
 def imprimir_estadisticas(datos):
     imprimir_seccion("### DEMOGRAFÍA GENERAL ###")
 
-    print(f"El país con menor población es: {datos["pais_menor_poblacion"]}")
-    print(f"El país con mayor población es: {datos["pais_mayor_poblacion"]}")
+    print(f"País con menor población ...: {datos["pais_menor_poblacion"]}")
+    print(f"País con mayor población ...: {datos["pais_mayor_poblacion"]}")
 
     imprimir_seccion("### PROMEDIOS GEOGRÁFICOS ###")
 
@@ -237,7 +245,3 @@ def imprimir_estadisticas(datos):
     print(f"África.....: {datos['total_por_continente']['África']} países")
     print(f"Asia.......: {datos['total_por_continente']['Asia']} países")
     print(f"Oceanía....: {datos['total_por_continente']['Oceanía']} países")
-
-
-datos = obtener_estadisticas()
-imprimir_estadisticas(datos)
