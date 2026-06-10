@@ -141,7 +141,7 @@ def actualizar_pais():
         return
 
     if eleccion.upper() in ("SI", "S"):
-        actualizar_poblacion_de_pais(pais)
+        actualizar_campo_numerico(pais, "poblacion")
 
     # Pregunta al usuario si desea actualizar la superficie
     try:
@@ -151,35 +151,19 @@ def actualizar_pais():
         return
 
     if eleccion.upper() in ("SI", "S"):
-        actualizar_superficie_de_pais(pais)
+        actualizar_campo_numerico(pais, "superficie")
 
     guardar_paises_en_archivo(lista_paises)
 
-
-def actualizar_poblacion_de_pais(pais):
+def actualizar_campo_numerico(pais, campo):
     while True:
         try:
-            nuevo_val_poblacion = pedir_entero("Ingrese el nuevo valor de Población: ")
+            nuevo_val_campo = pedir_entero(f"Ingrese el nuevo valor de {campo.capitalize()}: ")
+            pais[campo] = nuevo_val_campo
+            print(f"{campo.capitalize()} actualizada correctamente.")
+            break
         except Exception as e:
             print(e)
             continue
 
-        # Actualiza el valor de la población
-        pais["poblacion"] = nuevo_val_poblacion
-
-        print("Población actualizada correctamente.")
-        break
-
-def actualizar_superficie_de_pais(pais):
-    while True:
-        try:
-            nuevo_val_superficie = pedir_entero("Ingrese el nuevo valor de Superficie: ")
-        except Exception as e:
-            print(e)
-            continue
-
-        # Actualiza el valor de la superficie
-        pais["superficie"] = nuevo_val_superficie
-
-        print("Superficie actualizada correctamente.")
-        break
+actualizar_pais()
