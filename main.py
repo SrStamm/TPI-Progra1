@@ -68,10 +68,101 @@ def guardar_paises_en_archivo(lista_paises, file_dir = "datos.csv"):
         escritor = csv.DictWriter(archivo, fieldnames=campos)
         escritor.writeheader()
         escritor.writerows(lista_paises)
+#--------------------------------------
+# Función Filtrado de Países TPIPROG1-7
+#--------------------------------------
+def filtrar_por_continente(lista_paises, continente):
+    """Filtra la lista de países por coincidencia exacta de continente."""
+    return [p for p in lista_paises if p["continente"].lower() == continente.lower()]
 
-# -----------------------
-# Función de Gastón 
-# -----------------------
+def filtrar_por_rango_poblacion(lista_paises, minimo, maximo):
+    """Filtra países que se encuentren dentro del rango de población inclusivo."""
+    return [p for p in lista_paises if minimo <= p["poblacion"] <= maximo]
+
+def filtrar_por_rango_superficie(lista_paises, minimo, maximo):
+    """Filtra países que se encuentren dentro del rango de superficie inclusivo."""
+    return [p for p in lista_paises if minimo <= p["superficie"] <= maximo]
+
+def ejecutar_menu_filtros():
+    """Maneja la interfaz del submenú de filtros y valida las entradas del usuario."""
+    lista_paises = obtener_paises_de_archivo()
+    
+    if not lista_paises:
+        print("Error: No hay datos disponibles para filtrar.")
+        return
+
+    while True:
+        imprimir_seccion("### SUBMENÚ DE FILTROS ###")
+        print("1. Filtrar por Continente")
+        print("2. Filtrar por Rango de Población")
+        print("3. Filtrar por Rango de Superficie")
+        print("4. Volver al menú principal")
+        
+        opcion = input("Seleccione una opción de filtrado (1-4): ").strip()
+        resultados = []
+        
+        if opcion == "1":
+            try:
+                continente_buscado = pedir_string("Ingrese el continente a filtrar: ").strip().capitalize()
+                # Mapeo para asegurar compatibilidad con las tildes del CSV base
+                mapeo_tildes = {"America": "América", "Africa": "África", "Oceania": "Oceanía"}
+                continente_sin_tilde = continente_buscado.replace("á","a").replace("é","e").replace("í","i").replace("ó","o").replace("ú","u")
+                
+                if continente_sin_tilde in mapeo_tildes:
+                    continente_buscado = mapeo_tildes[continente_sin_tilde]
+                
+                resultados = filtrar_por_continente(lista_paises, continente_buscado)
+            except ValueError as e:
+                print(e)
+                continue
+
+        elif opcion == "2":
+            print("\n--- Configurar Rango de Población ---")
+            try:
+                minimo = pedir_entero("Ingrese la población MÍNIMA: ")
+                maximo = pedir_entero("Ingrese la población MÁXIMA: ")
+                
+                if minimo > maximo:
+                    print("Error: El valor mínimo no puede ser mayor al máximo.")
+                    continue
+                
+                resultados = filtrar_por_rango_poblacion(lista_paises, minimo, maximo)
+            except ValueError as e:
+                print(e)
+                continue
+
+        elif opcion == "3":
+            print("\n--- Configurar Rango de Superficie ---")
+            try:
+                minimo = pedir_entero("Ingrese la superficie MÍNIMA (km²): ")
+                maximo = pedir_entero("Ingrese la superficie MÁXIMA (km²): ")
+                
+                if minimo > maximo:
+                    print("Error: El valor mínimo no puede ser mayor al máximo.")
+                    continue
+                
+                resultados = filtrar_por_rango_superficie(lista_paises, minimo, maximo)
+            except ValueError as e:
+                print(e)
+                continue
+
+        elif opcion == "4":
+            print("Volviendo al menú principal...")
+            break
+        else:
+            print("Opción inválida. Intente de nuevo.")
+            continue
+
+        # Validar si la búsqueda trajo elementos antes de imprimir la tabla
+        if len(resultados) == 0:
+            print("\n⚠ No se encontraron países que coincidan con el filtro aplicado.")
+        else:
+            print(f"\nSe encontraron {len(resultados)} países:")
+            imprimir_paises(resultados)
+
+# ------------------------------
+# Función agregar país TPIROG1-4 
+# ------------------------------
 
 def agregar_pais_a_archivo():
     print("\n--- REGISTRAR NUEVO PAÍS ---")
