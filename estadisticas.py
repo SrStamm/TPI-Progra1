@@ -42,21 +42,3 @@ def obtener_estadisticas(lista_paises):
     }
 
 
-def imprimir_estadisticas(datos):
-    imprimir_seccion("### DEMOGRAFÍA GENERAL ###")
-
-    print(f"País con menor población ...: {datos["pais_menor_poblacion"]}")
-    print(f"País con mayor población ...: {datos["pais_mayor_poblacion"]}")
-
-    imprimir_seccion("### PROMEDIOS GEOGRÁFICOS ###")
-
-    print(f"El promedio de población es: {round(datos['total_poblacion'] / datos['cantidad_de_datos']):,}")
-    print(f"El promedio de superficie es: {round(datos['total_superficie'] / datos['cantidad_de_datos']):,} kms")
-
-    imprimir_seccion("### DISTRIBUCIÓN POR CONTINENTE ###")
-
-    print(f"América....: {datos['total_por_continente']['América']} países")
-    print(f"Europa.....: {datos['total_por_continente']['Europa']} países")
-    print(f"África.....: {datos['total_por_continente']['África']} países")
-    print(f"Asia.......: {datos['total_por_continente']['Asia']} países")
-    print(f"Oceanía....: {datos['total_por_continente']['Oceanía']} países")
