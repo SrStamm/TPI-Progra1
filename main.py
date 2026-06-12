@@ -349,16 +349,33 @@ def imprimir_estadisticas(datos):
 # Ordenado
 # ---------
 
-def ordenar_paises_por_nombre(lista_paises, descendente = False):
-    return sorted(
-        lista_paises,
-        key=lambda p: p["nombre"].lower(),
-        reverse=descendente
-    )
+def obtener_nombre(pais):
+    return pais["nombre"].lower()
 
-def ordenar_paises_por_numero(lista_paises, campo, descendente = False):
-    return sorted(
-        lista_paises,
-        key=lambda p: p[campo],
-        reverse=descendente
-    )
+def obtener_poblacion(pais):
+    return pais["poblacion"]
+
+def obtener_superficie(pais):
+    return pais["superficie"]
+
+def ordenar_paises(lista_paises, campo, descendente = False):
+    if campo == "nombre":
+        return sorted(
+            lista_paises,
+            key=obtener_nombre,
+            reverse=descendente
+        )
+
+    elif campo == "poblacion":
+        return sorted(
+            lista_paises,
+            key=obtener_poblacion,
+            reverse=descendente
+        )
+
+    else:
+        return sorted(
+            lista_paises,
+            key=obtener_superficie,
+            reverse=descendente
+        )
