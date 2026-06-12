@@ -215,6 +215,10 @@ def agregar_pais_a_archivo():
     
     print(f"\n¡Éxito! El país {nombre} fue agregado al archivo.")
 
+# ----------------
+# Actualizar país
+# ----------------
+
 def actualizar_pais():
     # Solicita el nombre del país, si no es válido lanza excepción
     try:
@@ -274,6 +278,10 @@ def actualizar_campo_numerico(pais, campo):
             print(e)
             continue
 
+# -------------
+# Estadísticas
+# -------------
+
 def obtener_estadisticas():
     lista_paises = obtener_paises_de_archivo()
 
@@ -317,7 +325,6 @@ def obtener_estadisticas():
         "total_por_continente": total_por_continente
     }
 
-
 def imprimir_estadisticas(datos):
     imprimir_seccion("### DEMOGRAFÍA GENERAL ###")
 
@@ -336,3 +343,22 @@ def imprimir_estadisticas(datos):
     print(f"África.....: {datos['total_por_continente']['África']} países")
     print(f"Asia.......: {datos['total_por_continente']['Asia']} países")
     print(f"Oceanía....: {datos['total_por_continente']['Oceanía']} países")
+
+
+# ---------
+# Ordenado
+# ---------
+
+def ordenar_paises_por_nombre(lista_paises, descendente = False):
+    return sorted(
+        lista_paises,
+        key=lambda p: p["nombre"].lower(),
+        reverse=descendente
+    )
+
+def ordenar_paises_por_numero(lista_paises, campo, descendente = False):
+    return sorted(
+        lista_paises,
+        key=lambda p: p[campo],
+        reverse=descendente
+    )
