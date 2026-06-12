@@ -379,3 +379,18 @@ def ordenar_paises(lista_paises, campo, descendente = False):
             key=obtener_superficie,
             reverse=descendente
         )
+
+# ---------
+# Búsqueda
+# ---------
+
+def buscar_pais(lista_paises, nombre_pais):
+    coincidencias = []
+
+    # Itera por cada país
+    for i in lista_paises:
+        # Si coincide, lo agrega a la lista de coincidencias
+        if nombre_pais.lower() in i["nombre"].lower():
+            coincidencias.append(i)
+
+    return coincidencias
