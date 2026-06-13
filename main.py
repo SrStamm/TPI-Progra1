@@ -89,9 +89,10 @@ def guardar_paises_en_archivo(lista_paises, file_dir = "datos.csv"):
         escritor.writeheader()
         escritor.writerows(lista_paises)
 
-#--------------------------------------
-# Función Filtrado de Países TPIPROG1-7
-#--------------------------------------
+#----------------------------
+# Función Filtrado de Países
+#----------------------------
+
 def filtrar_por_continente(lista_paises, continente):
     """Filtra la lista de países por coincidencia exacta de continente."""
     return [p for p in lista_paises if p["continente"].lower() == continente.lower()]
@@ -178,9 +179,10 @@ def ejecutar_menu_filtros(lista_paises):
     else:
         imprimir_paises(resultados)
 
-# ------------------------------
-# Función agregar país TPIROG1-4 
-# ------------------------------
+# ---------------------
+# Función agregar país
+# ---------------------
+
 def agregar_pais_a_archivo():
     imprimir_seccion("Agregar nuevo país")
     try:
@@ -205,6 +207,7 @@ def agregar_pais_a_archivo():
 # ----------------
 # Actualizar país
 # ----------------
+
 def actualizar_pais(lista_paises):
     imprimir_seccion("Actualizar datos de un país")
     try:
@@ -303,7 +306,6 @@ def imprimir_estadisticas(datos):
     if not datos:
         print("⚠ Error: Archivo vacío o datos no correlacionados.")
         return
-    print("Mostrarlos al usuario")
     print(f"-> País con menor población: {datos['pais_menor_poblacion']}")
     print(f"-> País con mayor población: {datos['pais_mayor_poblacion']}")
     print(f"-> Promedio Población......: {round(datos['total_poblacion'] / datos['cantidad_de_datos']):,}")
