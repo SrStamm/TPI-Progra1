@@ -45,6 +45,21 @@ def imprimir_pais(pais):
     print("-" * 75)
     print(f'{pais["nombre"]:<20} {pais["poblacion"]:>15} {pais["superficie"]:>15} {pais["continente"]:<15}')
 
+def normalizar_continente(continente_ingresado):
+    mapeo_tildes = {"America": "América", "Africa": "África", "Oceania": "Oceanía"}
+    continente_sin_tilde = continente_ingresado.replace("á","a").replace("é","e").replace("í","i").replace("ó","o").replace("ú","u")
+
+    if continente_sin_tilde in mapeo_tildes:
+        continente_ingresado = mapeo_tildes[continente_sin_tilde]
+
+    continentes_validos = ["América", "Europa", "Asia", "África", "Oceanía"]
+    if continente_ingresado not in continentes_validos:
+        raise ValueError("El continente ingresado no existe")
+
+    return continente_ingresado
+
+#
+
 def obtener_paises_de_archivo(file_dir = "datos.csv"):
     try:
         with open(file_dir, 'r', encoding='utf-8') as archivo:
@@ -105,22 +120,16 @@ def ejecutar_menu_filtros(lista_paises):
     
     if opcion == "1":
         try:
+            # Solicita al usuario el continente a filtrar
             continente_buscado = pedir_string("Ingresar continente: ").strip().capitalize()
-            mapeo_tildes = {"America": "América", "Africa": "África", "Oceania": "Oceanía"}
-            continente_sin_tilde = continente_buscado.replace("á","a").replace("é","e").replace("í","i").replace("ó","o").replace("ú","u")
-            
-            if continente_sin_tilde in mapeo_tildes:
-                continente_buscado = mapeo_tildes[continente_sin_tilde]
-            
-            continentes_validos = ["América", "Europa", "Asia", "África", "Oceanía"]
-            if continente_buscado not in continentes_validos:
-                print("Error: El continente ingresado no existe")
-                return
-                
+
+            # Válida que sea un continente verdadero
+            continente_buscado = normalizar_continente(continente_buscado)
+
             resultados = filtrar_por_continente(lista_paises, continente_buscado)
             print("Mostrar países de ese continente")
         except ValueError as e:
-            print(e)
+            print("Error: ", e)
             return
 
     elif opcion == "2":
@@ -135,7 +144,7 @@ def ejecutar_menu_filtros(lista_paises):
             resultados = filtrar_por_rango_poblacion(lista_paises, minimo, maximo)
             print("Mostrar países en el rango de población")
         except ValueError as e:
-            print(e)
+            print("Error: ", e)
             return
 
     elif opcion == "3":
@@ -150,7 +159,7 @@ def ejecutar_menu_filtros(lista_paises):
             resultados = filtrar_por_rango_superficie(lista_paises, minimo, maximo)
             print("Mostrar países en el rango de Superficie")
         except ValueError as e:
-            print(e)
+            print("Error: ", e)
             return
     else:
         print("Error: opción fuera de rango")
@@ -171,15 +180,7 @@ def agregar_pais_a_archivo(lista_paises):
 
         continente = pedir_string("Ingresar continente: ").strip().capitalize()
 
-        # Válida que la opción ingresada del usuario sea correcta
-        continentes_validos = ["America", "Europa", "Asia", "Africa", "Oceania", "América", "África", "Oceanía"]
-        if continente not in continentes_validos:
-            raise ValueError("Debe ingresar un string válido.")
-
-        # Convierte los continentes para que usen tilde
-        if continente == "America": continente = "América"
-        if continente == "Africa": continente = "África"
-        if continente == "Oceania": continente = "Oceanía"
+        continente = normalizar_continente(continente)
 
         poblacion = pedir_entero("Ingresar población: ")
         superficie = pedir_entero("Ingresar superficie: ")
