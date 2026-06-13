@@ -10,13 +10,11 @@ def imprimir_seccion(seccion):
     print("-----------------------------")
 
 def pedir_entero(mensaje):
-    # Valida que lo ingresado sea un entero
     try:
         entero = int(input(mensaje))
     except ValueError:
         raise ValueError("Debe ingresar un número entero válido.")
 
-    # Si el entero es menor o igual a 0, lanza excepción
     if entero <= 0:
         raise ValueError("El número debe ser un entero mayor a cero.")
 
@@ -25,7 +23,6 @@ def pedir_entero(mensaje):
 def pedir_string(mensaje):
     respuesta_usuario = input(mensaje)
 
-    # Valida con strip ya que isAlpha() ignora los espacios
     if len(respuesta_usuario.strip()) == 0:
         raise ValueError("Error: No puede estar vacío.")
 
@@ -33,6 +30,19 @@ def pedir_string(mensaje):
         raise ValueError("Debe ingresar un string válido.")
 
     return respuesta_usuario
+
+def normalizar_continente(continente_ingresado):
+    mapeo_tildes = {"America": "América", "Africa": "África", "Oceania": "Oceanía"}
+    continente_sin_tilde = continente_ingresado.replace("á","a").replace("é","e").replace("í","i").replace("ó","o").replace("ú","u")
+
+    if continente_sin_tilde in mapeo_tildes:
+        continente_ingresado = mapeo_tildes[continente_sin_tilde]
+
+    continentes_validos = ["América", "Europa", "Asia", "África", "Oceanía"]
+    if continente_ingresado not in continentes_validos:
+        raise ValueError("El continente ingresado no existe.")
+
+    return continente_ingresado
 
 def imprimir_paises(paises):
     print(f"{'País':<20} {'Población':>15} {'Superficie':>15} {'Continente':<15}")
@@ -45,24 +55,6 @@ def imprimir_pais(pais):
     print("-" * 75)
     print(f'{pais["nombre"]:<20} {pais["poblacion"]:>15} {pais["superficie"]:>15} {pais["continente"]:<15}')
 
-def normalizar_continente(continente_ingresado):
-    mapeo_tildes = {"America": "América", "Africa": "África", "Oceania": "Oceanía"}
-    continente_sin_tilde = continente_ingresado.replace("á","a").replace("é","e").replace("í","i").replace("ó","o").replace("ú","u")
-
-    if continente_sin_tilde in mapeo_tildes:
-        continente_ingresado = mapeo_tildes[continente_sin_tilde]
-
-    continentes_validos = ["América", "Europa", "Asia", "África", "Oceanía"]
-    if continente_ingresado not in continentes_validos:
-        raise ValueError("El continente ingresado no existe")
-
-    return continente_ingresado
-
-
-#----------------------------
-# Manejo de datos
-#----------------------------
-
 def obtener_paises_de_archivo(file_dir = "datos.csv"):
     try:
         with open(file_dir, 'r', encoding='utf-8') as archivo:
@@ -70,7 +62,6 @@ def obtener_paises_de_archivo(file_dir = "datos.csv"):
             lista_paises = []
             for i in lector:
                 try:
-                    #Convierte los datos numéricos a enteros (int) al leer el archivo
                     pais_parseado = {
                         "nombre": i["nombre"],
                         "poblacion": int(i["poblacion"]),
@@ -79,7 +70,6 @@ def obtener_paises_de_archivo(file_dir = "datos.csv"):
                     }
                     lista_paises.append(pais_parseado)
                 except (ValueError, KeyError, AttributeError):
-                    # Si hay un error de formato o falta una columna en la fila del CSV, la salta de forma segura
                     continue
             return lista_paises
     except FileNotFoundError:
@@ -92,33 +82,19 @@ def guardar_paises_en_archivo(lista_paises, file_dir = "datos.csv"):
         escritor.writeheader()
         escritor.writerows(lista_paises)
 
-#----------------------------
-# Función Filtrado de Países
-#----------------------------
-
+#--------------------------------------
+# Función Filtrado de Países TPIPROG1-7
+#--------------------------------------
 def filtrar_por_continente(lista_paises, continente):
-    """Filtra la lista de países por coincidencia exacta de continente."""
     return [p for p in lista_paises if p["continente"].lower() == continente.lower()]
 
 def filtrar_por_rango_poblacion(lista_paises, minimo, maximo):
-    """Filtra países que se encuentren dentro del rango de población inclusivo."""
     return [p for p in lista_paises if minimo <= p["poblacion"] <= maximo]
 
 def filtrar_por_rango_superficie(lista_paises, minimo, maximo):
-    """Filtra países que se encuentren dentro del rango de superficie inclusivo."""
     return [p for p in lista_paises if minimo <= p["superficie"] <= maximo]
 
-def ingresar_max_y_min():
-    minimo = pedir_entero("Ingresar rango de población (MÍNIMO): ")
-    maximo = pedir_entero("Ingresar rango de población (MÁXIMO): ")
-
-    if minimo > maximo:
-        raise ValueError("El valor mínimo no puede ser mayor al máximo.")
-
-    return minimo, maximo
-
 def ejecutar_menu_filtros(lista_paises):
-    """Maneja la interfaz del submenú de filtros y valida las entradas del usuario."""
     if not lista_paises:
         print("Error: No hay datos disponibles para filtrar.")
         return
@@ -128,96 +104,113 @@ def ejecutar_menu_filtros(lista_paises):
     print("2. Filtrar por Rango de Población")
     print("3. Filtrar por Rango de Superficie")
 
-    try:
-        opcion = pedir_entero("¿Opción válida? (1 a 3): ")
-    except Exception as e:
-        print("Error: ", e) 
-        return
+    while True:
+        try:
+            opcion = pedir_entero("¿Opción válida? (1 a 3): ")
+            if opcion not in [1, 2, 3]:
+                print("Error: opción fuera de rango")
+                continue
+            break
+        except ValueError as e:
+            print("Error: ", e)
 
     resultados = []
 
     if opcion == 1:
-        try:
-            # Solicita al usuario el continente a filtrar
-            continente_buscado = pedir_string("Ingresar continente: ").strip().capitalize()
-
-            # Válida que sea un continente verdadero
-            continente_buscado = normalizar_continente(continente_buscado)
-
-            resultados = filtrar_por_continente(lista_paises, continente_buscado)
-            print("Mostrar países de ese continente")
-        except ValueError as e:
-            print("Error: ", e)
-            return
+        while True:
+            try:
+                continente_buscado = pedir_string("Ingresar continente: ").strip().capitalize()
+                continente_buscado = normalizar_continente(continente_buscado)
+                resultados = filtrar_por_continente(lista_paises, continente_buscado)
+                break
+            except ValueError as e:
+                print("Error: ", e)
 
     elif opcion == 2:
-        try:
-            # Solicita el minimo y maximo
-            minimo, maximo = ingresar_max_y_min()
-
-            # Filtra por esos valores
-            resultados = filtrar_por_rango_poblacion(lista_paises, minimo, maximo)
-            print("Mostrar países en el rango de población")
-
-        except ValueError as e:
-            print("Error: ", e)
-            return
+        while True:
+            try:
+                minimo = pedir_entero("Ingresar rango de población (MÍNIMO): ")
+                maximo = pedir_entero("Ingresar rango de población (MÁXIMO): ")
+                if minimo > maximo:
+                    print("Error: El valor mínimo no puede ser mayor al máximo.")
+                    continue
+                resultados = filtrar_por_rango_poblacion(lista_paises, minimo, maximo)
+                break
+            except ValueError as e:
+                print("Error: ", e)
 
     elif opcion == 3:
-        try:
-            # Solicita el minimo y maximo
-            minimo, maximo = ingresar_max_y_min()
-
-            resultados = filtrar_por_rango_superficie(lista_paises, minimo, maximo)
-            print("Mostrar países en el rango de Superficie")
-        except ValueError as e:
-            print("Error: ", e)
-            return
-    else:
-        print("Error: opción fuera de rango")
-        return
+        while True:
+            try:
+                minimo = pedir_entero("Ingresar rango de Superficie (MÍNIMA): ")
+                maximo = pedir_entero("Ingresar rango de Superficie (MÁXIMA): ")
+                if minimo > maximo:
+                    print("Error: El valor mínimo no puede ser mayor al máximo.")
+                    continue
+                resultados = filtrar_por_rango_superficie(lista_paises, minimo, maximo)
+                break
+            except ValueError as e:
+                print("Error: ", e)
 
     if len(resultados) == 0:
         print("\n⚠ No se encontraron países que coincidan con el filtro aplicado.")
     else:
+        imprimir_seccion("Países que coinciden con el filtro")
         imprimir_paises(resultados)
 
-# ---------------------
-# Función agregar país
-# ---------------------
-
+# ------------------------------
+# Función agregar país TPIROG1-4 
+# ------------------------------
 def agregar_pais_a_archivo():
     imprimir_seccion("Agregar nuevo país")
-    try:
-        nombre = pedir_string("Ingresar nombre: ").strip()
+    
+    while True:
+        try:
+            nombre = pedir_string("Ingresar nombre: ").strip()
+            break
+        except ValueError as e:
+            print("Error: ", e)
 
-        continente = pedir_string("Ingresar continente: ").strip().capitalize()
+    while True:
+        try:
+            continente = pedir_string("Ingresar continente: ").strip().capitalize()
+            continente = normalizar_continente(continente)
+            break
+        except ValueError as e:
+            print("Error: ", e)
 
-        continente = normalizar_continente(continente)
+    while True:
+        try:
+            poblacion = pedir_entero("Ingresar población: ")
+            break
+        except ValueError as e:
+            print("Error: ", e)
 
-        poblacion = pedir_entero("Ingresar población: ")
-        superficie = pedir_entero("Ingresar superficie: ")
+    while True:
+        try:
+            superficie = pedir_entero("Ingresar superficie: ")
+            break
+        except ValueError as e:
+            print("Error: ", e)
 
-        return {
-            "nombre": nombre,
-            "poblacion": poblacion,
-            "superficie": superficie,
-            "continente": continente
-        }
-    except ValueError as e:
-        raise e
+    return {
+        "nombre": nombre,
+        "poblacion": poblacion,
+        "superficie": superficie,
+        "continente": continente
+    }
 
 # ----------------
 # Actualizar país
 # ----------------
-
 def actualizar_pais(lista_paises):
     imprimir_seccion("Actualizar datos de un país")
-    try:
-        nombre_pais = pedir_string("Ingresar el nombre del país: ")
-    except ValueError:
-        print("Error: Debe ingresar un string válido.")
-        return
+    while True:
+        try:
+            nombre_pais = pedir_string("Ingresar el nombre del país: ")
+            break
+        except ValueError:
+            print("Error: Debe ingresar un string válido.")
 
     existe = False
     pais = {}
@@ -238,11 +231,10 @@ def actualizar_pais(lista_paises):
             try:
                 nuevo_val = pedir_entero("Ingrese el nuevo valor: ")
                 pais["poblacion"] = nuevo_val
-                print("Población actualizado")
+                print("Población actualizada")
                 break
             except ValueError as e:
                 print("Error: ", e)
-                continue
 
     elif eleccion_pob not in ("NO", "N"):
         print("Error: Debe ingresar un dígito válido.")
@@ -254,11 +246,10 @@ def actualizar_pais(lista_paises):
             try:
                 nuevo_val = pedir_entero("Ingrese el nuevo valor: ")
                 pais["superficie"] = nuevo_val
-                print("Superficie actualizado")
+                print("Superficie actualizada")
                 break
             except ValueError as e:
                 print("Error: ", e)
-                continue
 
     elif eleccion_sup not in ("NO", "N"):
         print("Error: Debe ingresar un dígito válido.")
@@ -351,88 +342,95 @@ if __name__ == "__main__":
     lista_paises = obtener_paises_de_archivo()
 
     while True:
-        print("\n1. Mostrar todos los países")
+        print("\n=========================================")
+        print("    MENÚ PRINCIPAL - GESTIÓN DE PAÍSES")
+        print("=========================================")
+        print("1. Mostrar todos los países")
         print("2. Buscar o Filtrar países")
         print("3. Ordenar países")
         print("4. Mostrar estadísticas generales")
         print("5. Agregar nuevo país")
         print("6. Actualizar datos de un país")
         print("0. Salir")
+        print("=========================================")
 
         opcion = input("Ingresar opción: ").strip()
 
         if opcion not in ["0", "1", "2", "3", "4", "5", "6"]:
-            print("Error: Opción fuera de rango")
+            print("Error: Opción fuera de rango.")
             continue
 
         # --- OPCIÓN 1: Mostrar todos los países ---
         if opcion == "1":
-            print("Mostrar todos los países")
+            imprimir_seccion("Listado Completo de Países")
             imprimir_paises(lista_paises)
 
         # --- OPCIÓN 2: Buscar o Filtrar países ---
         elif opcion == "2":
-            criterio = input("¿Buscar o Filtrar? ").strip().capitalize()
+            criterio = input("¿Desea Buscar o Filtrar países? ").strip().capitalize()
 
             if criterio == "Buscar":
-                try:
-                    nombre_buscado = pedir_string("Ingresar el nombre del país: ")
-                except ValueError:
-                    print("Error: Debe ingresar un string válido.")
-                    continue
+                imprimir_seccion("Búsqueda de Países")
+                while True:
+                    try:
+                        nombre_buscado = pedir_string("Ingresar el nombre del país o coincidencia: ")
+                        break
+                    except ValueError:
+                        print("Error: Debe ingresar un string válido.")
 
                 coincidencias = buscar_pais(lista_paises, nombre_buscado)
                 if not coincidencias:
-                    print("Info: No fue encontrado el país")
+                    print("\nInfo: No se encontraron coincidencias para la búsqueda.")
                 else:
-                    print("Mostrar país/países")
+                    imprimir_seccion(f"Resultados de la búsqueda '{nombre_buscado}'")
                     imprimir_paises(coincidencias)
 
             elif criterio == "Filtrar":
                 ejecutar_menu_filtros(lista_paises)
             else:
-                print("Error: opción fuera de rango")
+                print("Error: Opción no válida (Debe escribir 'Buscar' o 'Filtrar').")
 
         # --- OPCIÓN 3: Ordenar países ---
         elif opcion == "3":
-            print("Mostrar opciones de ordenamiento")
-            print("1. Ordenar por nombre\n2. Ordenar por población\n3. Ordenar por superficie")
-            opt_orden = input("¿Opción válida? (1 a 3): ").strip()
+            imprimir_seccion("Configuración de Ordenamiento")
+            print("1. Ordenar por Nombre\n2. Ordenar por Población\n3. Ordenar por Superficie")
+            
+            while True:
+                opt_orden = input("Seleccione criterio (1 a 3): ").strip()
+                if opt_orden in ["1", "2", "3"]:
+                    break
+                print("Error: Opción fuera de rango.")
 
-            if opt_orden in ["1", "2", "3"]:
-                campos_map = {"1": "nombre", "2": "poblacion", "3": "superficie"}
-                campo_elegido = campos_map[opt_orden]
+            campos_map = {"1": "nombre", "2": "poblacion", "3": "superficie"}
+            campo_elegido = campos_map[opt_orden]
 
-                sentido = input("¿Ascendente o Descendente? (A/D): ").strip().upper()
-                if sentido not in ["A", "D"]:
-                    print("Error: opción fuera de rango")
-                    continue
+            while True:
+                sentido = input("¿Orden Ascendente o Descendente? (A/D): ").strip().upper()
+                if sentido in ["A", "D"]:
+                    break
+                print("Error: Opción no válida (Debe ingresar 'A' o 'D').")
 
-                desc = True if sentido == "D" else False
-                print("Mostrar países ordenados")
-                p_ordenados = ordenar_paises(lista_paises, campo_elegido, descendente=desc)
-                imprimir_paises(p_ordenados)
-            else:
-                print("Error: opción fuera de rango")
+            desc = True if sentido == "D" else False
+            p_ordenados = ordenar_paises(lista_paises, campo_elegido, descendente=desc)
+            
+            imprimir_seccion(f"Países Ordenados por {campo_elegido.capitalize()} ({'Descendente' if desc else 'Ascendente'})")
+            imprimir_paises(p_ordenados)
 
         # --- OPCIÓN 4: Mostrar estadísticas generales ---
         elif opcion == "4":
-            print("Obtener estadísticas")
+            imprimir_seccion("Estadísticas Generales del Dataset")
             stats = obtener_estadisticas(lista_paises)
             imprimir_estadisticas(stats)
 
         # --- OPCIÓN 5: Agregar nuevo país ---
         elif opcion == "5":
             try:
-                # Función que le pide al usuario los datos
                 nuevo_pais = agregar_pais_a_archivo()
-
                 lista_paises.append(nuevo_pais)
-
                 guardar_paises_en_archivo(lista_paises)
-                print("Agregar país exitoso.")
+                print("\n✔ ¡País agregado y guardado con éxito!")
             except Exception as e:
-                print("Error: ", e)
+                print("\nError general al intentar guardar:", e)
 
         # --- OPCIÓN 6: Actualizar datos de un país ---
         elif opcion == "6":
@@ -440,5 +438,5 @@ if __name__ == "__main__":
 
         # --- OPCIÓN 0: Salir ---
         elif opcion == "0":
-            print("Saludar al usuario. Terminar ejecución.")
+            print("\n¡Gracias por utilizar el sistema! Finalizando ejecución...")
             break
