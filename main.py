@@ -220,26 +220,32 @@ def actualizar_pais(lista_paises):
 
     eleccion_pob = input("¿Desea actualizar la Población? (S/N): ").strip().upper()
     if eleccion_pob in ("SI", "S"):
-        try:
-            nuevo_val = pedir_entero("Ingrese el nuevo valor: ")
-            pais["poblacion"] = nuevo_val
-            print("Actualizar Población")
-        except ValueError:
-            print("Error: Debe ingresar un dígito válido.")
-            return
+        while True:
+            try:
+                nuevo_val = pedir_entero("Ingrese el nuevo valor: ")
+                pais["poblacion"] = nuevo_val
+                print("Población actualizado")
+                break
+            except ValueError as e:
+                print("Error: ", e)
+                continue
+
     elif eleccion_pob not in ("NO", "N"):
         print("Error: Debe ingresar un dígito válido.")
         return
 
     eleccion_sup = input("¿Desea actualizar la Superficie? (S/N): ").strip().upper()
     if eleccion_sup in ("SI", "S"):
-        try:
-            nuevo_val = pedir_entero("Ingrese el nuevo valor: ")
-            pais["superficie"] = nuevo_val
-            print("Actualizar Superficie")
-        except ValueError:
-            print("Error: Debe ingresar un dígito válido.")
-            return
+        while True:
+            try:
+                nuevo_val = pedir_entero("Ingrese el nuevo valor: ")
+                pais["superficie"] = nuevo_val
+                print("Superficie actaulizado")
+                break
+            except ValueError as e:
+                print("Error: ", e)
+                continue
+
     elif eleccion_sup not in ("NO", "N"):
         print("Error: Debe ingresar un dígito válido.")
         return
