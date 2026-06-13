@@ -165,7 +165,7 @@ def agregar_pais_a_archivo(lista_paises):
     print("\nAgregar nuevo país")
     try:
         nombre = pedir_string("Ingresar nombre: ").strip()
-        if not nombre.replace(" ", "").isalpha():
+        if not nombre.replace(" ", "").isdigit():
             print("Error: Debe ingresar un string válido.")
             return
 
