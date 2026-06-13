@@ -86,10 +86,8 @@ def filtrar_por_rango_superficie(lista_paises, minimo, maximo):
     """Filtra países que se encuentren dentro del rango de superficie inclusivo."""
     return [p for p in lista_paises if minimo <= p["superficie"] <= maximo]
 
-def ejecutar_menu_filtros():
+def ejecutar_menu_filtros(lista_paises):
     """Maneja la interfaz del submenú de filtros y valida las entradas del usuario."""
-    lista_paises = obtener_paises_de_archivo()
-    
     if not lista_paises:
         print("Error: No hay datos disponibles para filtrar.")
         return
@@ -163,9 +161,8 @@ def ejecutar_menu_filtros():
 # ------------------------------
 # Función agregar país TPIROG1-4 
 # ------------------------------
-def agregar_pais_a_archivo():
+def agregar_pais_a_archivo(lista_paises):
     print("\nAgregar nuevo país")
-    lista_paises = obtener_paises_de_archivo()
     try:
         nombre = pedir_string("Ingresar nombre: ").strip()
         if not nombre.replace(" ", "").isalpha():
@@ -200,7 +197,7 @@ def agregar_pais_a_archivo():
 # ----------------
 # Actualizar país
 # ----------------
-def actualizar_pais():
+def actualizar_pais(lista_paises):
     print("\nActualizar datos de un país")
     try:
         nombre_pais = pedir_string("Ingresar el nombre del país: ")
@@ -208,7 +205,6 @@ def actualizar_pais():
         print("Error: Debe ingresar un string válido.")
         return
 
-    lista_paises = obtener_paises_de_archivo()
     existe = False
     pais = {}
 
@@ -253,8 +249,7 @@ def actualizar_pais():
 # -------------
 # Estadísticas
 # -------------
-def obtener_estadisticas():
-    lista_paises = obtener_paises_de_archivo()
+def obtener_estadisticas(lista_paises):
     if not lista_paises:
         return None
 
@@ -334,6 +329,8 @@ def buscar_pais(lista_paises, nombre_pais):
 # =====================================================================
 
 if __name__ == "__main__":
+    lista_paises = obtener_paises_de_archivo()
+
     while True:
         print("\n1. Mostrar todos los países")
         print("2. Buscar o Filtrar países")
@@ -342,10 +339,9 @@ if __name__ == "__main__":
         print("5. Agregar nuevo país")
         print("6. Actualizar datos de un país")
         print("0. Salir")
-        
+
         opcion = input("Ingresar opción: ").strip()
-        lista_actual = obtener_paises_de_archivo()
-        
+
         if opcion not in ["0", "1", "2", "3", "4", "5", "6"]:
             print("Error: Opción fuera de rango")
             continue
@@ -353,28 +349,28 @@ if __name__ == "__main__":
         # --- OPCIÓN 1: Mostrar todos los países ---
         if opcion == "1":
             print("Mostrar todos los países")
-            imprimir_paises(lista_actual)
-            
+            imprimir_paises(lista_paises)
+
         # --- OPCIÓN 2: Buscar o Filtrar países ---
         elif opcion == "2":
             criterio = input("¿Buscar o Filtrar? ").strip().capitalize()
-            
+
             if criterio == "Buscar":
                 try:
                     nombre_buscado = pedir_string("Ingresar el nombre del país: ")
                 except ValueError:
                     print("Error: Debe ingresar un string válido.")
                     continue
-                    
-                coincidencias = buscar_pais(lista_actual, nombre_buscado)
+
+                coincidencias = buscar_pais(lista_paises, nombre_buscado)
                 if not coincidencias:
                     print("Info: No fue encontrado el país")
                 else:
                     print("Mostrar país/países")
                     imprimir_paises(coincidencias)
-                    
+
             elif criterio == "Filtrar":
-                ejecutar_menu_filtros()
+                ejecutar_menu_filtros(lista_paises)
             else:
                 print("Error: opción fuera de rango")
 
@@ -383,19 +379,19 @@ if __name__ == "__main__":
             print("Mostrar opciones de ordenamiento")
             print("1. Ordenar por nombre\n2. Ordenar por población\n3. Ordenar por superficie")
             opt_orden = input("¿Opción válida? (1 a 3): ").strip()
-            
+
             if opt_orden in ["1", "2", "3"]:
                 campos_map = {"1": "nombre", "2": "poblacion", "3": "superficie"}
                 campo_elegido = campos_map[opt_orden]
-                
+
                 sentido = input("¿Ascendente o Descendente? (A/D): ").strip().upper()
                 if sentido not in ["A", "D"]:
                     print("Error: opción fuera de rango")
                     continue
-                    
+
                 desc = True if sentido == "D" else False
                 print("Mostrar países ordenados")
-                p_ordenados = ordenar_paises(lista_actual, campo_elegido, descendente=desc)
+                p_ordenados = ordenar_paises(lista_paises, campo_elegido, descendente=desc)
                 imprimir_paises(p_ordenados)
             else:
                 print("Error: opción fuera de rango")
@@ -403,16 +399,16 @@ if __name__ == "__main__":
         # --- OPCIÓN 4: Mostrar estadísticas generales ---
         elif opcion == "4":
             print("Obtener estadísticas")
-            stats = obtener_estadisticas()
+            stats = obtener_estadisticas(lista_paises)
             imprimir_estadisticas(stats)
 
         # --- OPCIÓN 5: Agregar nuevo país ---
         elif opcion == "5":
-            agregar_pais_a_archivo()
+            agregar_pais_a_archivo(lista_paises)
 
         # --- OPCIÓN 6: Actualizar datos de un país ---
         elif opcion == "6":
-            actualizar_pais()
+            actualizar_pais(lista_paises)
 
         # --- OPCIÓN 0: Salir ---
         elif opcion == "0":
