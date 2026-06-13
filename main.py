@@ -58,7 +58,10 @@ def normalizar_continente(continente_ingresado):
 
     return continente_ingresado
 
-#
+
+#----------------------------
+# Manejo de datos
+#----------------------------
 
 def obtener_paises_de_archivo(file_dir = "datos.csv"):
     try:
