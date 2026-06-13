@@ -173,7 +173,7 @@ def ejecutar_menu_filtros(lista_paises):
 # ------------------------------
 # Función agregar país TPIROG1-4 
 # ------------------------------
-def agregar_pais_a_archivo(lista_paises):
+def agregar_pais_a_archivo():
     print("\nAgregar nuevo país")
     try:
         nombre = pedir_string("Ingresar nombre: ").strip()
@@ -185,18 +185,14 @@ def agregar_pais_a_archivo(lista_paises):
         poblacion = pedir_entero("Ingresar población: ")
         superficie = pedir_entero("Ingresar superficie: ")
 
-        lista_paises.append({
+        return {
             "nombre": nombre,
             "poblacion": poblacion,
             "superficie": superficie,
             "continente": continente
-        })
-
-        guardar_paises_en_archivo(lista_paises)
-        print("Agregar país exitoso.")
-
+        }
     except ValueError as e:
-        print("Error: ", e)
+        raise e
 
 # ----------------
 # Actualizar país
@@ -414,7 +410,16 @@ if __name__ == "__main__":
 
         # --- OPCIÓN 5: Agregar nuevo país ---
         elif opcion == "5":
-            agregar_pais_a_archivo(lista_paises)
+            try:
+                # Función que le pide al usuario los datos
+                nuevo_pais = agregar_pais_a_archivo()
+
+                lista_paises.append(nuevo_pais)
+
+                guardar_paises_en_archivo(lista_paises)
+                print("Agregar país exitoso.")
+            except Exception as e:
+                print("Error: ", e)
 
         # --- OPCIÓN 6: Actualizar datos de un país ---
         elif opcion == "6":
