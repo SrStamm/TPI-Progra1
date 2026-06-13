@@ -104,21 +104,35 @@ def filtrar_por_rango_superficie(lista_paises, minimo, maximo):
     """Filtra países que se encuentren dentro del rango de superficie inclusivo."""
     return [p for p in lista_paises if minimo <= p["superficie"] <= maximo]
 
+def ingresar_max_y_min():
+    minimo = pedir_entero("Ingresar rango de población (MÍNIMO): ")
+    maximo = pedir_entero("Ingresar rango de población (MÁXIMO): ")
+
+    if minimo > maximo:
+        raise ValueError("El valor mínimo no puede ser mayor al máximo.")
+
+    return minimo, maximo
+
 def ejecutar_menu_filtros(lista_paises):
     """Maneja la interfaz del submenú de filtros y valida las entradas del usuario."""
     if not lista_paises:
         print("Error: No hay datos disponibles para filtrar.")
         return
 
-    print("\nMostrar opciones de filtrado")
+    imprimir_seccion("Mostrar opciones de filtrado")
     print("1. Filtrar por Continente")
     print("2. Filtrar por Rango de Población")
     print("3. Filtrar por Rango de Superficie")
-    
-    opcion = input("¿Opción válida? (1 a 3): ").strip()
+
+    try:
+        opcion = pedir_entero("¿Opción válida? (1 a 3): ")
+    except Exception as e:
+        print("Error: ", e) 
+        return
+
     resultados = []
-    
-    if opcion == "1":
+
+    if opcion == 1:
         try:
             # Solicita al usuario el continente a filtrar
             continente_buscado = pedir_string("Ingresar continente: ").strip().capitalize()
@@ -132,30 +146,24 @@ def ejecutar_menu_filtros(lista_paises):
             print("Error: ", e)
             return
 
-    elif opcion == "2":
+    elif opcion == 2:
         try:
-            minimo = pedir_entero("Ingresar rango de población (MÍNIMO): ")
-            maximo = pedir_entero("Ingresar rango de población (MÁXIMO): ")
-            
-            if minimo > maximo:
-                print("Error: El valor mínimo no puede ser mayor al máximo.")
-                return
-            
+            # Solicita el minimo y maximo
+            minimo, maximo = ingresar_max_y_min()
+
+            # Filtra por esos valores
             resultados = filtrar_por_rango_poblacion(lista_paises, minimo, maximo)
             print("Mostrar países en el rango de población")
+
         except ValueError as e:
             print("Error: ", e)
             return
 
-    elif opcion == "3":
+    elif opcion == 3:
         try:
-            minimo = pedir_entero("Ingresar rango de Superficie (MÍNIMA): ")
-            maximo = pedir_entero("Ingresar rango de Superficie (MÁXIMA): ")
-            
-            if minimo > maximo:
-                print("Error: El valor mínimo no puede ser mayor al máximo.")
-                return
-            
+            # Solicita el minimo y maximo
+            minimo, maximo = ingresar_max_y_min()
+
             resultados = filtrar_por_rango_superficie(lista_paises, minimo, maximo)
             print("Mostrar países en el rango de Superficie")
         except ValueError as e:
@@ -174,7 +182,7 @@ def ejecutar_menu_filtros(lista_paises):
 # Función agregar país TPIROG1-4 
 # ------------------------------
 def agregar_pais_a_archivo():
-    print("\nAgregar nuevo país")
+    imprimir_seccion("Agregar nuevo país")
     try:
         nombre = pedir_string("Ingresar nombre: ").strip()
 
@@ -198,7 +206,7 @@ def agregar_pais_a_archivo():
 # Actualizar país
 # ----------------
 def actualizar_pais(lista_paises):
-    print("\nActualizar datos de un país")
+    imprimir_seccion("Actualizar datos de un país")
     try:
         nombre_pais = pedir_string("Ingresar el nombre del país: ")
     except ValueError:
@@ -240,7 +248,7 @@ def actualizar_pais(lista_paises):
             try:
                 nuevo_val = pedir_entero("Ingrese el nuevo valor: ")
                 pais["superficie"] = nuevo_val
-                print("Superficie actaulizado")
+                print("Superficie actualizado")
                 break
             except ValueError as e:
                 print("Error: ", e)
