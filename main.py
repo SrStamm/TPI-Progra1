@@ -29,6 +29,9 @@ def pedir_string(mensaje):
     if len(respuesta_usuario.strip()) == 0:
         raise ValueError("Error: No puede estar vacío.")
 
+    if respuesta_usuario.replace(" ", "").isdigit():
+        raise ValueError("Debe ingresar un string válido.")
+
     return respuesta_usuario
 
 def imprimir_paises(paises):
@@ -165,16 +168,15 @@ def agregar_pais_a_archivo(lista_paises):
     print("\nAgregar nuevo país")
     try:
         nombre = pedir_string("Ingresar nombre: ").strip()
-        if not nombre.replace(" ", "").isdigit():
-            print("Error: Debe ingresar un string válido.")
-            return
 
         continente = pedir_string("Ingresar continente: ").strip().capitalize()
+
+        # Válida que la opción ingresada del usuario sea correcta
         continentes_validos = ["America", "Europa", "Asia", "Africa", "Oceania", "América", "África", "Oceanía"]
         if continente not in continentes_validos:
-            print("Error: Debe ingresar un string válido.")
-            return
+            raise ValueError("Debe ingresar un string válido.")
 
+        # Convierte los continentes para que usen tilde
         if continente == "America": continente = "América"
         if continente == "Africa": continente = "África"
         if continente == "Oceania": continente = "Oceanía"
@@ -188,11 +190,12 @@ def agregar_pais_a_archivo(lista_paises):
             "superficie": superficie,
             "continente": continente
         })
+
         guardar_paises_en_archivo(lista_paises)
         print("Agregar país exitoso.")
-        
-    except ValueError:
-        print("Error: Debe ingresar un string válido.")
+
+    except ValueError as e:
+        print("Error: ", e)
 
 # ----------------
 # Actualizar país
